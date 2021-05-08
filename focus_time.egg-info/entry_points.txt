@@ -1,0 +1,3 @@
+[console_scripts]
+focus = focus.__main__:main
+
