@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="focus-time",
-    version="1.0.5",
+    version="1.0.6",
     author="Philip Shamash",
     author_email="philip.shamash.17@ucl.ac.uk",
     description="Focus time is an application in python to help you focus for a set amount of time",

@@ -1,7 +1,7 @@
 import numpy as np
 from focus.timer_backend import timer
 
-def focus_session():
+def focus_session(minutes_required = False):
     '''      FOCUS TIMER for one session     '''
     target_focus_duration =         float(input('How long would you like to focus for? (minutes)          '))
 
@@ -18,7 +18,7 @@ def focus_session():
     maximum_interval = average_interval*2
 
     # Run the session
-    time_focused_session = timer(target_focus_duration, maximum_session_duration, average_interval, minimum_interval, maximum_interval)
+    time_focused_session = timer(target_focus_duration, maximum_session_duration, average_interval, minimum_interval, maximum_interval, minutes_required)
     return time_focused_session
 
 if __name__ == "__main__":

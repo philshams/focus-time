@@ -15,7 +15,7 @@ def focus_query(caption, timeout = 5):
         if (time.time() - start_time) > timeout: return True
 
 
-def timer(target_focus_duration, maximum_session_duration, average_interval, minimum_interval, maximum_interval):  
+def timer(target_focus_duration, maximum_session_duration, average_interval, minimum_interval, maximum_interval, minutes_required):  
     print(datetime.now())
     print('\nstarting focus session for {} to {} minutes\n'.format(target_focus_duration, maximum_session_duration))
     playsound(str(Path(__file__).parent / '../data/start.mp3'))
@@ -57,10 +57,13 @@ def timer(target_focus_duration, maximum_session_duration, average_interval, min
                 print(str(np.round(100-100*focus_time_left / (target_focus_duration*60))) + '% done\n')
             else:
                 print('Keep at it, champ\n')
-    if not failed:
-        print('You did it!!!')
-        playsound(str(Path(__file__).parent / '../data/success.mp3'))
 
-    time_focused_session = (target_focus_duration - (focus_time_left/60))
+    time_focused_session = (target_focus_duration - (focus_time_left/60)) # in minutes
+
+    if not failed:
+        if time_focused_session < minutes_required: # skip this if you've passed the focus day
+            print('You did it!!!')
+            playsound(str(Path(__file__).parent / '../data/success.mp3'))
+
     return time_focused_session
     
