@@ -1,24 +1,25 @@
+import numpy as np
+from focus.timer_backend import timer
+
 def focus_session():
-    '''      MEDITATION TIMER      '''
-    # How long are you meditating for, if you're a good boy? (minutes)
-    meditation_time =         float(input('How long would you like to focus for? (minutes)          '))
-    #maximum_meditation_time = float(input('How long do you have before life takes over? (minutes)   '))
-    if meditation_time <= 5: maximum_meditation_time = 10
-    elif meditation_time <= 15: maximum_meditation_time = meditation_time * 2
-    elif meditation_time < 20: maximum_meditation_time = 30
-    else: maximum_meditation_time = meditation_time * 1.5 
+    '''      FOCUS TIMER for one session     '''
+    target_focus_duration =         float(input('How long would you like to focus for? (minutes)          '))
 
-    # How long between each ding dong (seconds)
-    #average_interval = float(input('Average inter-ding-dong interval? (seconds)'))
-    import numpy as np
-    if meditation_time > 2: average_interval = np.sqrt(meditation_time) * 60
-    else: average_interval = meditation_time / 2 * 60
-    minimum_interval = min(20, average_interval/2) #int(input('Minimum inter-ding-dong interval? (seconds)'))
-    maximum_interval = average_interval*2 #int(input('Maximum inter-ding-dong interval? (seconds)'))
+    # set the maximum session duration given the target focus time
+    if target_focus_duration <= 5: maximum_session_duration = 10.
+    elif target_focus_duration <= 15: maximum_session_duration = target_focus_duration * 2
+    elif target_focus_duration < 20: maximum_session_duration = 30.
+    else: maximum_session_duration = target_focus_duration * 1.5 
 
-    # Run the timer
-    from focus.timer_backend import timer
-    timer(meditation_time, maximum_meditation_time, average_interval, minimum_interval, maximum_interval)
+    # set the average, minimum and maximum interval between focus reminders (the ding-dong sound)
+    if target_focus_duration > 2: average_interval = np.sqrt(target_focus_duration) * 60
+    else: average_interval = target_focus_duration / 2 * 60
+    minimum_interval = min(20, average_interval/2)
+    maximum_interval = average_interval*2
+
+    # Run the session
+    time_focused_session = timer(target_focus_duration, maximum_session_duration, average_interval, minimum_interval, maximum_interval)
+    return time_focused_session
 
 if __name__ == "__main__":
     focus_session()

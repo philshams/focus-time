@@ -1,10 +1,10 @@
 Metadata-Version: 1.0
 Name: focus-time
-Version: 1.0.0
-Summary: A small example package
-Home-page: UNKNOWN
+Version: 1.0.5
+Summary: Focus time is an application in python to help you focus for a set amount of time
+Home-page: https://github.com/philshams/focus-time
 Author: Philip Shamash
 Author-email: philip.shamash.17@ucl.ac.uk
-License: UNKNOWN
+License: GNU General Public License
 Description: UNKNOWN
 Platform: UNKNOWN

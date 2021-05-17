@@ -15,50 +15,52 @@ def focus_query(caption, timeout = 5):
         if (time.time() - start_time) > timeout: return True
 
 
-def timer(meditation_time, maximum_meditation_time, average_interval, minimum_interval, maximum_interval):  
+def timer(target_focus_duration, maximum_session_duration, average_interval, minimum_interval, maximum_interval):  
     print(datetime.now())
-    print('\nstarting focus session for ' + str(meditation_time) + ' to ' + str(maximum_meditation_time) + ' minutes\n')
+    print('\nstarting focus session for {} to {} minutes\n'.format(target_focus_duration, maximum_session_duration))
     playsound(str(Path(__file__).parent / '../data/start.mp3'))
     # how much time is left
-    meditation_time_left = meditation_time*60
+    focus_time_left = target_focus_duration*60
     # set a timer for the whole session
-    start_time = time.time()
-    time_elapsed = 0
+    session_start_time = time.time()
+    minute_timer_start_time = time.time()
     failed = False
     # Start the main loop
-    while meditation_time_left > 0:
-        # Select the interval
+    while focus_time_left > 0:
+        # Select the interval between reminders (ding dong sound)
         interval = -1
-#        print(minimum_interval)
-#        print(maximum_interval)
         while interval < minimum_interval or interval > maximum_interval:
             interval = np.random.exponential(scale = (average_interval - minimum_interval)) + minimum_interval
-        # Wait for the interval
-#        print(datetime.now())
-#        print(np.round(interval/60))
-        seconds_of_interval = 0
-        while seconds_of_interval < interval:
-            time.sleep(1)
-            time_elapsed = time.time() - start_time
-            if int(time_elapsed) % 60 == 0: print('')
-            if time_elapsed > maximum_meditation_time*60:
+        # Wait for the interval to pass
+        interval_start_time = time.time()
+        interval_time_elapsed = 0
+        while interval_time_elapsed < interval:
+            minute_timer_time_elapsed = time.time() - minute_timer_start_time
+            interval_time_elapsed = time.time() - interval_start_time
+            total_time_elapsed = time.time() - session_start_time
+            if int(minute_timer_time_elapsed) > 0 and int(minute_timer_time_elapsed) % 60 == 0: 
+                minute_timer_start_time = time.time()
+                print('')
+            if total_time_elapsed > maximum_session_duration*60:
                 print('Out of time.')
                 playsound(str(Path(__file__).parent / '../data/failure.mp3'))
                 failed = True
                 break
-            seconds_of_interval += 1
 
-        
-        if failed: break
-        # Were you focusing?   
-        ans = focus_query('Were you focusing? If yes, carry on. If no, press any key within 10 seconds', timeout = 10) 
-        if ans:
-            print('\nGreat job!')
-            meditation_time_left -= (interval+10)
-            print(str(np.round(100-100*meditation_time_left / (meditation_time*60))) + '% done\n')
-        else:
-            print('Keep at it, champ\n')
+        if failed:
+            break
+        else:  
+            ans = focus_query('Were you focusing? If yes, carry on. If no, press any key within 10 seconds', timeout = 10) 
+            if ans:
+                print('\nGreat job!')
+                focus_time_left -= (interval+10)
+                print(str(np.round(100-100*focus_time_left / (target_focus_duration*60))) + '% done\n')
+            else:
+                print('Keep at it, champ\n')
     if not failed:
         print('You did it!!!')
         playsound(str(Path(__file__).parent / '../data/success.mp3'))
+
+    time_focused_session = (target_focus_duration - (focus_time_left/60))
+    return time_focused_session
     
