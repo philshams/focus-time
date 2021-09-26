@@ -5,15 +5,17 @@ import msvcrt
 from datetime import datetime
 from pathlib import Path
 
-def focus_query(caption, timeout = 5):
-    start_time = time.time()
-    while msvcrt.kbhit(): msvcrt.getche() # Remove keys pressed in the interval
-    print(caption);
-    playsound(str(Path(__file__).parent / '../data/ding dong.mp3'))
-    while True: # If a key is pressed, return False; otherwise True
-        if msvcrt.kbhit(): return False
-        if (time.time() - start_time) > timeout: return True
+    # def set_max_mins_in_session(self) -> None:
+    #     if   self.intended_minutes_of_focus <= 5:  self.max_mins_in_session = 10.
+    #     elif self.intended_minutes_of_focus <= 15: self.max_mins_in_session = self.intended_mins_of_focus * 2
+    #     elif self.intended_minutes_of_focus < 20:  self.max_mins_in_session = 30.
+    #     elif self.intended_minutes_of_focus >= 20: self.max_mins_in_session = self.intended_mins_of_focus * 1.5 
 
+    # def set_interval_between_focus_reminders(self):
+    #     if self.intended_mins_of_focus > 2:    self.avg_secs_between_reminders = np.sqrt(self.intended_mins_of_focus) * 60
+    #     elif self.intended_mins_of_focus <= 2: self.avg_secs_between_reminders = self.intended_mins_of_focus / 2 * 60
+    #     self.min_secs_between_reminders = min(20, self.avg_secs_between_reminders/2)
+    #     self.max_secs_between_reminders = self.avg_secs_between_reminders*2
 
 def timer(target_focus_duration, maximum_session_duration, average_interval, minimum_interval, maximum_interval, minutes_required):  
     print(datetime.now())
@@ -67,3 +69,11 @@ def timer(target_focus_duration, maximum_session_duration, average_interval, min
 
     return time_focused_session
     
+def focus_query(caption, timeout = 5):
+    start_time = time.time()
+    while msvcrt.kbhit(): msvcrt.getche() # Remove keys pressed in the interval
+    print(caption);
+    playsound(str(Path(__file__).parent / '../data/ding dong.mp3'))
+    while True: # If a key is pressed, return False; otherwise True
+        if msvcrt.kbhit(): return False
+        if (time.time() - start_time) > timeout: return True

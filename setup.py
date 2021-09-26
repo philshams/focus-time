@@ -5,10 +5,10 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="focus-time",
-    version="1.0.6",
+    version="1.1.0",
     author="Philip Shamash",
     author_email="philip.shamash.17@ucl.ac.uk",
-    description="Focus time is an application in python to help you focus for a set amount of time",
+    description="Focus time is an Python application that can help you focus for a set amount of time",
     license = "GNU General Public License",
     url = "https://github.com/philshams/focus-time",
     packages=["focus"],
@@ -20,10 +20,10 @@ setuptools.setup(
                       ],
     entry_points={
         "console_scripts": [
-            "focus = focus.__session__:session",
-            "focus-time = focus.__session__:session",
-            "focus-session = focus.__session__:session",
-            "focus-day = focus.__day__:day"
+            "focus = focus.terminal_commands:run_focus_session",
+            "focus-time = focus.terminal_commands:run_focus_session",
+            "focus-session = focus.terminal_commands:run_focus_session",
+            "focus-day = focus.terminal_commands:run_focus_day"
         ]
     }
 )

@@ -1,6 +1,0 @@
-[console_scripts]
-focus = focus.__session__:session
-focus-day = focus.__day__:day
-focus-session = focus.__session__:session
-focus-time = focus.__session__:session
-

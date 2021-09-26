@@ -1,3 +1,0 @@
-DateTime>=4.3
-numpy>=1.20.2
-playsound>=1.2.2
