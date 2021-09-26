@@ -4,76 +4,95 @@ from playsound import playsound
 import msvcrt
 from datetime import datetime
 from pathlib import Path
+from typing import Tuple
 
-    # def set_max_mins_in_session(self) -> None:
-    #     if   self.intended_minutes_of_focus <= 5:  self.max_mins_in_session = 10.
-    #     elif self.intended_minutes_of_focus <= 15: self.max_mins_in_session = self.intended_mins_of_focus * 2
-    #     elif self.intended_minutes_of_focus < 20:  self.max_mins_in_session = 30.
-    #     elif self.intended_minutes_of_focus >= 20: self.max_mins_in_session = self.intended_mins_of_focus * 1.5 
+class Timer():
+    def __init__(self, intended_mins_of_focus):
+        self.intended_mins_of_focus    = intended_mins_of_focus
+        self.secs_left_in_session      = self.intended_mins_of_focus*60
+        self.minute_timer_start_time   = time.time()
+        self.reminder_duration_secs    = 15
+        self.session_failed            = False
+        self.set_max_session_duration()
+        self.set_interval_between_focus_reminders()
 
-    # def set_interval_between_focus_reminders(self):
-    #     if self.intended_mins_of_focus > 2:    self.avg_secs_between_reminders = np.sqrt(self.intended_mins_of_focus) * 60
-    #     elif self.intended_mins_of_focus <= 2: self.avg_secs_between_reminders = self.intended_mins_of_focus / 2 * 60
-    #     self.min_secs_between_reminders = min(20, self.avg_secs_between_reminders/2)
-    #     self.max_secs_between_reminders = self.avg_secs_between_reminders*2
+    def time_session(self) -> Tuple[float, bool]:
+        self.initiate_session()
+        while self.secs_left_in_session > 0:
+            self.select_secs_between_reminders()
+            self.wait_until_next_reminder()
+            if self.session_failed: break
+            self.issue_reminder()
+        mins_focused_in_session = self.intended_mins_of_focus - self.secs_left_in_session/60
+        return mins_focused_in_session, self.session_failed
 
-def timer(target_focus_duration, maximum_session_duration, average_interval, minimum_interval, maximum_interval, minutes_required):  
-    print(datetime.now())
-    print('\nstarting focus session for {} to {} minutes\n'.format(target_focus_duration, maximum_session_duration))
-    playsound(str(Path(__file__).parent / '../data/start.mp3'))
-    # how much time is left
-    focus_time_left = target_focus_duration*60
-    # set a timer for the whole session
-    session_start_time = time.time()
-    minute_timer_start_time = time.time()
-    failed = False
-    # Start the main loop
-    while focus_time_left > 0:
-        # Select the interval between reminders (ding dong sound)
-        interval = -1
-        while interval < minimum_interval or interval > maximum_interval:
-            interval = np.random.exponential(scale = (average_interval - minimum_interval)) + minimum_interval
-        # Wait for the interval to pass
-        interval_start_time = time.time()
-        interval_time_elapsed = 0
-        while interval_time_elapsed < interval:
-            minute_timer_time_elapsed = time.time() - minute_timer_start_time
-            interval_time_elapsed = time.time() - interval_start_time
-            total_time_elapsed = time.time() - session_start_time
-            if int(minute_timer_time_elapsed) > 0 and int(minute_timer_time_elapsed) % 60 == 0: 
-                minute_timer_start_time = time.time()
-                print('')
-            if total_time_elapsed > maximum_session_duration*60:
-                print('Out of time.')
-                playsound(str(Path(__file__).parent / '../data/failure.mp3'))
-                failed = True
+# ------INIT FUNCS-------------------------------------------
+    def set_max_session_duration(self):
+        if   self.intended_mins_of_focus <= 5:  self.max_mins_in_session = 10.
+        elif self.intended_mins_of_focus <= 15: self.max_mins_in_session = self.intended_mins_of_focus * 2
+        elif self.intended_mins_of_focus < 20:  self.max_mins_in_session = 30.
+        elif self.intended_mins_of_focus >= 20: self.max_mins_in_session = self.intended_mins_of_focus * 1.5 
+
+    def set_interval_between_focus_reminders(self):
+        if   self.intended_mins_of_focus > 2:  self.avg_secs_between_reminders = np.sqrt(self.intended_mins_of_focus) * 60
+        elif self.intended_mins_of_focus <= 2: self.avg_secs_between_reminders = self.intended_mins_of_focus / 2 * 60
+
+        self.min_secs_between_reminders = min(20, self.avg_secs_between_reminders/2)
+        self.max_secs_between_reminders = self.avg_secs_between_reminders*2
+
+# -----TIME_SESSION FUNCS--------------------------------------
+    def initiate_session(self):
+        self.session_start_time      = time.time()
+        print('\n-- Starting focus session for {} minutes of quality time (up to {} minutes of real time)       {}\n\n'.\
+              format(self.intended_mins_of_focus, self.max_mins_in_session, datetime.now()))
+        playsound(str(Path(__file__).parent / '../data/start.mp3'))
+
+    def select_secs_between_reminders(self):
+        self.secs_between_reminders = -np.inf
+        while self.secs_between_reminders < self.min_secs_between_reminders or self.secs_between_reminders > self.max_secs_between_reminders:
+            exponential_dist_scale = self.avg_secs_between_reminders - self.min_secs_between_reminders
+            self.secs_between_reminders = np.random.exponential(scale = exponential_dist_scale) + self.min_secs_between_reminders
+
+    def wait_until_next_reminder(self):
+        last_reminder_time          = time.time()
+        secs_elapsed_since_reminder = 0
+        while secs_elapsed_since_reminder < self.secs_between_reminders:
+            secs_elapsed_since_reminder  = time.time() - last_reminder_time
+            self.secs_elapsed_in_session = time.time() - self.session_start_time
+            self.mins_elapsed_in_session = self.secs_elapsed_in_session / 60
+            self.print_line_break_each_minute() 
+            if self.time_is_up():
+                self.user_failed()
                 break
+        self.secs_left_in_session -= (self.secs_between_reminders + self.reminder_duration_secs)
 
-        if failed:
-            break
-        else:  
-            ans = focus_query('Were you focusing? If yes, carry on. If no, press any key within 10 seconds', timeout = 10) 
-            if ans:
-                print('\nGreat job!')
-                focus_time_left -= (interval+10)
-                print(str(np.round(100-100*focus_time_left / (target_focus_duration*60))) + '% done\n')
-            else:
-                print('Keep at it, champ\n')
+    def time_is_up(self) -> bool:
+        if self.mins_elapsed_in_session > self.max_mins_in_session:  return True
+        if self.mins_elapsed_in_session <= self.max_mins_in_session: return False
 
-    time_focused_session = (target_focus_duration - (focus_time_left/60)) # in minutes
-
-    if not failed:
-        if time_focused_session < minutes_required: # skip this if you've passed the focus day
-            print('You did it!!!')
-            playsound(str(Path(__file__).parent / '../data/success.mp3'))
-
-    return time_focused_session
+    def user_failed(self):
+        print('Out of time.')
+        playsound(str(Path(__file__).parent / '../data/failure.mp3'))
+        self.session_failed = True
     
-def focus_query(caption, timeout = 5):
-    start_time = time.time()
-    while msvcrt.kbhit(): msvcrt.getche() # Remove keys pressed in the interval
-    print(caption);
-    playsound(str(Path(__file__).parent / '../data/ding dong.mp3'))
-    while True: # If a key is pressed, return False; otherwise True
-        if msvcrt.kbhit(): return False
-        if (time.time() - start_time) > timeout: return True
+    def print_line_break_each_minute(self):
+        if int(self.secs_elapsed_in_session) % 60 == 0 and int(self.secs_elapsed_in_session) > 0: 
+            self.minute_timer_start_time = time.time()
+            print('')
+
+    def issue_reminder(self):
+        user_is_focusing = self.focus_query() 
+        if user_is_focusing:
+            percent_of_session_completed = np.round(100 - 100 * self.mins_elapsed_in_session / self.intended_mins_of_focus)
+            print('\nGreat job!\n{}% done\n'.format(percent_of_session_completed))
+        if not user_is_focusing:
+            print('Keep at it, champ\n')
+
+    def focus_query(self) -> bool:
+        start_time = time.time()
+        while msvcrt.kbhit(): msvcrt.getche() # disregard keys pressed in the inter-reminder interval
+        print('Were you focusing? If yes, carry on. If no, press any key within {} seconds'.format(self.reminder_duration_secs));
+        playsound(str(Path(__file__).parent / '../data/ding dong.mp3'))
+        while True:
+            if msvcrt.kbhit(): return False # any key is pressed
+            if (time.time() - start_time) > self.reminder_duration_secs: return True
