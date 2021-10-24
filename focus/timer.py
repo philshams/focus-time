@@ -1,10 +1,14 @@
 import numpy as np
 import time
 from playsound import playsound
-import msvcrt
 from datetime import datetime
 from pathlib import Path
 from typing import Tuple
+import sys
+if 'win' in sys.platform:  import msvcrt
+else:                      import tty
+
+
 
 class Timer():
     def __init__(self, intended_mins_of_focus):
@@ -90,9 +94,18 @@ class Timer():
 
     def focus_query(self) -> bool:
         start_time = time.time()
-        while msvcrt.kbhit(): msvcrt.getche() # disregard keys pressed in the inter-reminder interval
+        if 'win' in sys.platform:   
+            while msvcrt.kbhit(): msvcrt.getche() # disregard keys pressed in the inter-reminder interval
+        else:
+            tty.setcbreak(sys.stdin)
         print('Were you focusing? If yes, carry on. If no, press any key within {} seconds'.format(self.reminder_duration_secs));
         playsound(str(Path(__file__).parent / '../data/ding dong.mp3'))
         while True:
-            if msvcrt.kbhit(): return False # any key is pressed
+            if self.key_pressed: return False # any key is pressed
             if (time.time() - start_time) > self.reminder_duration_secs: return True
+
+    def key_pressed(self) -> bool:
+        if 'win' in sys.platform:       
+            return msvcrt.kbhit()
+        else:
+            return sys.stdin.read(1)
