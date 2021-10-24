@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Tuple
 import sys
-if 'win' in sys.platform:  import msvcrt
+if sys.platform[:3]=='win':  import msvcrt
 else:                      import tty
 
 
@@ -94,7 +94,7 @@ class Timer():
 
     def focus_query(self) -> bool:
         start_time = time.time()
-        if 'win' in sys.platform:   
+        if sys.platform[:3]=='win':   
             while msvcrt.kbhit(): msvcrt.getche() # disregard keys pressed in the inter-reminder interval
         else:
             tty.setcbreak(sys.stdin)
@@ -105,7 +105,7 @@ class Timer():
             if (time.time() - start_time) > self.reminder_duration_secs: return True
 
     def key_pressed(self) -> bool:
-        if 'win' in sys.platform:       
+        if sys.platform[:3]=='win':       
             return msvcrt.kbhit()
         else:
             return sys.stdin.read(1)

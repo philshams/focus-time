@@ -1,4 +1,4 @@
-# focus time
+# focus time [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active) ![github-actions](https://github.com/philshams/focus-time/actions/workflows/github-actions.yml/badge.svg) [![codecov](https://codecov.io/gh/philshams/focus-time/branch/master/graph/badge.svg?token=47QYGC78KA)](https://codecov.io/gh/philshams/focus-time) [![Maintainability](https://api.codeclimate.com/v1/badges/1ad02bb99ec75481e422/maintainability)](https://codeclimate.com/github/philshams/focus-time/maintainability)
 
 Focus time is an application in python to help you focus for a set amount of time
 
@@ -6,7 +6,7 @@ Focus time is an application in python to help you focus for a set amount of tim
 ```
 pip install focus-time
 ```
-- All testing was done on Windows 10 with Anaconda 3 in a conda environment with Python 3.8
+- Tested for use with Python 3.8. Currently working on Windows 10; support for Linux and MacOS upcoming. 
 - Focus time can be run through any terminal that can run Python packages (tested on Anaconda prompt, powershell, command prompt).
 - In Windows: right-click the title bar of the terminal GUI, click properties, and uncheck QuickEdit Mode if applicable. With QuickEdit Mode, certain clicking actions cause the terminal to freeze
 
