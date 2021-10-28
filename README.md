@@ -11,9 +11,9 @@ pip install focus-time
 - In Windows: right-click the title bar of the terminal GUI, click properties, and uncheck QuickEdit Mode if applicable. With QuickEdit Mode, certain clicking actions cause the terminal to freeze
 
 ## Focus session
-1. To start a focus session, simply turn on your sound, turn off your phone, and write the command (the commands ):
+1. To start a focus session, simply turn on your sound, turn off your phone, and write the command in your terminal, within the environment in which focus-time is installed ('focus-time', 'focus-session', and 'python -m focus.session' all work as well):
 ```py
-focus # focus-time, focus-session, and python -m focus.session all work as well
+focus
 ```
 2. Type in how long you would like to focus for in minutes (e.g. 60) and press enter. Note that this is the amount of _focusing_ time; if you are distracted for some of it, the session will take longer in real time
 ```
@@ -34,9 +34,9 @@ You did it!!!
 
 ## Focus day
 
-1. How about a whole day's worth of focus time? Enter the following command instead:
-```py
-focus-day # python -m focus.day works as well
+1. How about a whole day's worth of focus time? Enter the following command instead ('python -m focus.day' works as well):
+```
+focus-day
 ```
 2. Write how long you'd like to focus for today and press enter. This will be spread throughout multiple focus sessions.
 ```
