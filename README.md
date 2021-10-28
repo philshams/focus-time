@@ -36,7 +36,7 @@ You did it!!!
 
 1. How about a whole day's worth of focus time? Enter the following command instead:
 ```py
-focus-day # _python -m focus.day_ works as well
+focus-day # python -m focus.day works as well
 ```
 2. Write how long you'd like to focus for today and press enter. This will be spread throughout multiple focus sessions.
 ```
