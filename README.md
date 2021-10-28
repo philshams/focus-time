@@ -23,7 +23,7 @@ starting focus session for 60.0 to 90.0 minutes
 ```
 3. Every once and a while, a prompt will pop up along with a "ding-dong!", asking if you were actually focusing (e.g. writing your book) as opposed to something else (e.g. texting). If you were not focusing, make sure the terminal is selected when you press a key; this will not count the previous period toward your total amount of focus time. If you were focusing, just carry on!
 - The inter-ding-dong interval is randomly selected from an (approximately) exponentially decaying distribution. This means that at any point in time, the probability that the timer will end soon is about the same, regardless of how long it has been since the last ding-dong.
-- If you are using this as a meditation timer, it is recommended to use the sounds as a reminder to focus without pressing any anything.
+- If you are using this as a meditation timer, it is recommended to use the sounds as a reminder to focus without pressing anything.
 ```
 Were you focusing? If yes, carry on. If no, press any key within 10 seconds
 ```
