@@ -67,20 +67,21 @@ class Timer():
         return self.session_timed_out        
 
     def issue_reminder(self):
-        if self.user_says_theyre_focused() :
+        self.disregard_keys_pressed_during_inter_reminder_interval()
+        print(f'-- Were you focusing? If yes, carry on. If no, press any key within {self.duration_of_reminder} seconds')
+        if self.sound: playsound(str(Path(__file__).parent / '../data/ding dong.mp3'))
+        user_pressed_key = self.get_user_response()
+        if not user_pressed_key:
             self.mins_focused_so_far += (self.inter_reminder_interval + self.duration_of_reminder) / 60
             print(f'   Great job! {int(self.mins_focused_so_far / self.intended_mins_of_focus * 100)}% complete\n')
-        else:
+        elif user_pressed_key:
             print(f'   Keep at it, champ. Still at {int(self.mins_focused_so_far / self.intended_mins_of_focus * 100)}%\n')
 
-    def user_says_theyre_focused(self) -> bool:
+    def get_user_response(self) -> bool:
         start_time = time.time()
-        self.disregard_keys_pressed_during_inter_reminder_interval()
-        print(f'-- Were you focusing? If yes, carry on. If no, press any key within {self.duration_of_reminder} seconds');
-        if self.sound: playsound(str(Path(__file__).parent / '../data/ding dong.mp3'))
         while (time.time() - start_time) < self.duration_of_reminder:
-            if self.key_pressed(): return False
-        return True
+            if self.key_pressed(): return True
+        return False
 
     def key_pressed(self) -> bool:
         if sys.platform[:3]=='win':       
@@ -93,4 +94,4 @@ class Timer():
             while msvcrt.kbhit(): 
                 msvcrt.getch()
         else:
-            tty.setcbreak(sys.stdidn)
+            tty.setcbreak(sys.stdin)

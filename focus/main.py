@@ -7,7 +7,7 @@ class Focus():
     def __init__(self):
         self.test_speakers()
 
-    def session(self, context: str='single focus session'):
+    def session(self, context: str='single session'):
         self.query_intended_minutes_focus()
         self.run_timer()
         self.report_outcome_of_session(context)

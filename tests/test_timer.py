@@ -62,10 +62,11 @@ def test_issue_reminder():
     timer.issue_reminder()
     assert timer.mins_focused_so_far == 0.6 # no key press
 
-def test_user_says_theyre_focused():
+def test_get_user_response():
     timer = Timer(60)
     timer.initiate_session(sound = False)
-    assert timer.user_says_theyre_focused()
+    user_pressed_key = timer.get_user_response()
+    assert not user_pressed_key
 
 def test_key_pressed():
     #TODO: add mock user input to this test
