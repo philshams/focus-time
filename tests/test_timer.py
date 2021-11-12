@@ -56,16 +56,24 @@ def test_time_is_up() -> bool:
 
 def test_issue_reminder():
     timer = Timer(60)
-    pass
+    timer.initiate_session(sound = False)
+    timer.inter_reminder_interval = 21
+    timer.mins_focused_so_far = 0
+    timer.issue_reminder()
+    assert timer.mins_focused_so_far == 0.6 # no key press
 
 def test_user_says_theyre_focused():
     timer = Timer(60)
-    pass
+    timer.initiate_session(sound = False)
+    assert timer.user_says_theyre_focused()
 
 def test_key_pressed():
+    #TODO: add mock user input to this test
     timer = Timer(60)
-    pass
+    assert not timer.key_pressed()
 
 def test_disregard_keys_pressed_during_inter_reminder_interval():
+    #TODO: add mock user input to this test
     timer = Timer(60)
-    pass
+    timer.disregard_keys_pressed_during_inter_reminder_interval()
+    assert True # just make sure it runs without an error

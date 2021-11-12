@@ -20,21 +20,13 @@ class Focus():
             self.session(context='part of a focus day')
             self.hours_of_focus += self.mins_focused_in_session / 60
         self.report_outcome_of_day()
-# -----INIT FUNTIONS------------------------------------------------------------------------------
-    def test_speakers(self):
-        try: 
-            playsound(str(Path(__file__).parent / '../data/test.mp3'))
-            self.sound = True
-        except Exception: 
-            print('Note: speakers not identified, sound will not play')
-            self.sound = False
 
 # -----SESSION FUNCTIONS--------------------------------------------------------------------------- 
     def query_intended_minutes_focus(self):
         self.intended_mins_focus = float(input('\n-- How long would you like to focus for? (minutes)          '))
 
     def run_timer(self):
-        self.mins_focused_in_session, self.session_failed = Timer(self.intended_mins_focus).time_session(sound)
+        self.mins_focused_in_session, self.session_failed = Timer(self.intended_mins_focus).time_session(self.sound)
 
     def report_outcome_of_session(self, context):
         if context == 'part of a focus day': return
@@ -62,3 +54,11 @@ class Focus():
         else:
             print('\nYaaaaaaay. Another day of focus!\n')
             if self.sound: playsound(str(Path(__file__).parent / '../data/yay.mp3'))
+# -----INIT FUNTIONS------------------------------------------------------------------------------
+    def test_speakers(self):
+        try: 
+            playsound(str(Path(__file__).parent / '../data/test.mp3'))
+            self.sound = True
+        except Exception: 
+            print('Note: speakers not identified, sound will not play')
+            self.sound = False

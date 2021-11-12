@@ -6,7 +6,7 @@ Focus time is an application in python to help you focus for a set amount of tim
 ```
 pip install focus-time
 ```
-- Tested for use with Python 3.8. Currently working on Windows 10; support for Linux and MacOS upcoming. 
+- Tested for use with Python 3.6 and 3.8. Currently working on Windows 10; support for Linux and MacOS upcoming. 
 - Focus time can be run through any terminal that can run Python packages (tested on Anaconda prompt, powershell, command prompt).
 - In Windows: right-click the title bar of the terminal GUI, click properties, and uncheck QuickEdit Mode if applicable. With QuickEdit Mode, certain clicking actions cause the terminal to freeze
 
