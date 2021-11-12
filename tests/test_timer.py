@@ -31,7 +31,7 @@ def test_calculate_inter_reminder_interval_parameters():
         assert timer.max_inter_reminder_interval == max_
 
 def test_initiate_session():
-    timer = Timer(60).initiate_session()
+    timer = Timer(60).initiate_session(False)
     assert True # just make sure it proceeds without errors
 
 def test_select_inter_reminder_interval():
@@ -49,7 +49,10 @@ def test_wait_until_next_reminder():
 
 def test_time_is_up() -> bool:
     timer = Timer(60)
-    pass      
+    timer.mins_elapsed_in_session = 61
+    assert not timer.time_is_up()
+    timer.mins_elapsed_in_session = 91
+    assert timer.time_is_up()
 
 def test_issue_reminder():
     timer = Timer(60)

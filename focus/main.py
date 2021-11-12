@@ -4,6 +4,9 @@ from pathlib import Path
 from focus.timer import Timer
 
 class Focus():
+    def __init__(self):
+        self.test_speakers()
+
     def session(self, context: str='single focus session'):
         self.query_intended_minutes_focus()
         self.run_timer()
@@ -17,22 +20,30 @@ class Focus():
             self.session(context='part of a focus day')
             self.hours_of_focus += self.mins_focused_in_session / 60
         self.report_outcome_of_day()
-    
+# -----INIT FUNTIONS------------------------------------------------------------------------------
+    def test_speakers(self):
+        try: 
+            playsound(str(Path(__file__).parent / '../data/test.mp3'))
+            self.sound = True
+        except Exception: 
+            print('Note: speakers not identified, sound will not play')
+            self.sound = False
+
 # -----SESSION FUNCTIONS--------------------------------------------------------------------------- 
     def query_intended_minutes_focus(self):
         self.intended_mins_focus = float(input('\n-- How long would you like to focus for? (minutes)          '))
 
     def run_timer(self):
-        self.mins_focused_in_session, self.session_failed = Timer(self.intended_mins_focus).time_session()
+        self.mins_focused_in_session, self.session_failed = Timer(self.intended_mins_focus).time_session(sound)
 
     def report_outcome_of_session(self, context):
         if context == 'part of a focus day': return
         if self.session_failed: 
             print('Out of time.')
-            playsound(str(Path(__file__).parent / '../data/failure.mp3'))
+            if self.sound: playsound(str(Path(__file__).parent / '../data/failure.mp3'))
         elif not self.session_failed:
             print('You did it!!!')
-            playsound(str(Path(__file__).parent / '../data/success.mp3'))
+            if self.sound: playsound(str(Path(__file__).parent / '../data/success.mp3'))
 
 # -----DAY FUNCTIONS-------------------------------------------------------------------------------
     def query_intended_hours_of_focus(self):
@@ -47,7 +58,7 @@ class Focus():
     def report_outcome_of_day(self):
         if np.random.random() < .95:
             print('\nCongratulations slugger, you have just scored a day of focus!\n')
-            playsound(str(Path(__file__).parent / '../data/home run.mp3'))
+            if self.sound: playsound(str(Path(__file__).parent / '../data/home run.mp3'))
         else:
             print('\nYaaaaaaay. Another day of focus!\n')
-            playsound(str(Path(__file__).parent / '../data/yay.mp3'))
+            if self.sound: playsound(str(Path(__file__).parent / '../data/yay.mp3'))

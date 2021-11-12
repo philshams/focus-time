@@ -17,8 +17,8 @@ class Timer():
         self.calculate_max_session_duration()
         self.calculate_inter_reminder_interval_parameters()
 
-    def time_session(self) -> Tuple[float, bool]:
-        self.initiate_session()
+    def time_session(self, sound) -> Tuple[float, bool]:
+        self.initiate_session(sound)
         while self.mins_focused_so_far < self.intended_mins_of_focus:
             self.select_inter_reminder_interval()
             self.wait_until_next_reminder()
@@ -42,9 +42,9 @@ class Timer():
         self.exponential_parameter = self.avg_inter_reminder_interval - self.min_inter_reminder_interval
 
 # -----TIME_SESSION FUNCS--------------------------------------
-    def initiate_session(self):
+    def initiate_session(self, sound):
         print(f'\n-- Starting focus session for {int(self.intended_mins_of_focus)} minute{"" + "s"*(self.intended_mins_of_focus!=1)} of quality time (up to {int(self.max_mins_in_session)} minutes of real time)\n   {datetime.now()}\n')
-        playsound(str(Path(__file__).parent / '../data/start.mp3'))
+        if sound: playsound(str(Path(__file__).parent / '../data/start.mp3'))
         self.session_start_time = time.time()
 
     def select_inter_reminder_interval(self):
@@ -78,7 +78,7 @@ class Timer():
         print(f'-- Were you focusing? If yes, carry on. If no, press any key within {self.duration_of_reminder} seconds');
         playsound(str(Path(__file__).parent / '../data/ding dong.mp3'))
         while (time.time() - start_time) < self.duration_of_reminder:
-            if self.key_pressed(): return False # any key is pressed
+            if self.key_pressed(): return False
         return True
 
     def key_pressed(self) -> bool:
@@ -88,7 +88,8 @@ class Timer():
             return sys.stdin.read(1)
 
     def disregard_keys_pressed_during_inter_reminder_interval(self):
-        if sys.platform[:3]=='win': 
-            while msvcrt.kbhit(): msvcrt.getche()
+        if sys.platform[:3]=='win':
+            while msvcrt.kbhit(): 
+                msvcrt.getch()
         else:
             tty.setcbreak(sys.stdidn)
