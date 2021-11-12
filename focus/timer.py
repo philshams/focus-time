@@ -17,7 +17,7 @@ class Timer():
         self.calculate_max_session_duration()
         self.calculate_inter_reminder_interval_parameters()
 
-    def time_session(self, sound) -> Tuple[float, bool]:
+    def time_session(self, sound=True) -> Tuple[float, bool]:
         self.initiate_session(sound)
         while self.mins_focused_so_far < self.intended_mins_of_focus:
             self.select_inter_reminder_interval()
@@ -84,14 +84,13 @@ class Timer():
         return False
 
     def key_pressed(self) -> bool:
-        if sys.platform[:3]=='win':       
+        if sys.platform[:3]=='win':     
             return msvcrt.kbhit()
         else:
+            tty.setcbreak(sys.stdin)
             return sys.stdin.read(1)
 
     def disregard_keys_pressed_during_inter_reminder_interval(self):
         if sys.platform[:3]=='win':
             while msvcrt.kbhit(): 
                 msvcrt.getch()
-        else:
-            tty.setcbreak(sys.stdin)

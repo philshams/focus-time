@@ -45,7 +45,7 @@ class Focus():
         self.hours_of_focus_left = self.intended_hours_of_focus - self.hours_of_focus
         less_than_two_hours_left = self.hours_of_focus_left < 2
         self.session_num += 1
-        print(f"\n   You only have {np.round(self.hours_of_focus_left*(1 + 59*less_than_two_hours_left),1)} {'minutes'*less_than_two_hours_left + 'hours'*~less_than_two_hours_left} to go. When you're ready, let's start session number {self.sessions_num}!\n")
+        print(f"\n   You only have {np.round(self.hours_of_focus_left*(1 + 59*less_than_two_hours_left),1)} {'minutes'*less_than_two_hours_left + 'hours'*~less_than_two_hours_left} to go. When you're ready, let's start session number {self.session_num}!\n")
 
     def report_outcome_of_day(self):
         if np.random.random() < .95:

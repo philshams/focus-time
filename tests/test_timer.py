@@ -7,8 +7,9 @@ def test_init():
     assert timer.intended_mins_of_focus == 60
 
 def test_time_session():
-    timer = Timer(60)
-    pass
+    # test: just make sure it proceeds without errors
+    timer = Timer(.1)
+    timer.time_session(sound=False)
 
 def test_calculate_max_session_duration():
     test_input =     [0, 1, 14, 18, 60, 180]
@@ -31,8 +32,8 @@ def test_calculate_inter_reminder_interval_parameters():
         assert timer.max_inter_reminder_interval == max_
 
 def test_initiate_session():
+    # test: just make sure it proceeds without errors
     timer = Timer(60).initiate_session(False)
-    assert True # just make sure it proceeds without errors
 
 def test_select_inter_reminder_interval():
     timer = Timer(60)
@@ -75,6 +76,6 @@ def test_key_pressed():
 
 def test_disregard_keys_pressed_during_inter_reminder_interval():
     #TODO: add mock user input to this test
+    # test: just make sure it proceeds without errors
     timer = Timer(60)
     timer.disregard_keys_pressed_during_inter_reminder_interval()
-    assert True # just make sure it runs without an error
