@@ -5,7 +5,7 @@ from focus.timer import Timer
 
 class Focus():
     def session(self, context: str='single focus session'):
-        self.query_intended_minutes_of_focus()
+        self.query_intended_minutes_focus()
         self.run_timer()
         self.report_outcome_of_session(context)
 
@@ -19,13 +19,13 @@ class Focus():
         self.report_outcome_of_day()
     
 # -----SESSION FUNCTIONS--------------------------------------------------------------------------- 
-    def query_intended_minutes_of_focus(self):
-        self.intended_mins_of_focus = float(input('\n-- How long would you like to focus for? (minutes)          '))
+    def query_intended_minutes_focus(self):
+        self.intended_mins_focus = float(input('\n-- How long would you like to focus for? (minutes)          '))
 
     def run_timer(self):
-        self.mins_focused_in_session, self.session_failed = Timer(self.intended_mins_of_focus).time_session()
+        self.mins_focused_in_session, self.session_failed = Timer(self.intended_mins_focus).time_session()
 
-    def report_outcome_of_session(self):
+    def report_outcome_of_session(self, context):
         if context == 'part of a focus day': return
         if self.session_failed: 
             print('Out of time.')
