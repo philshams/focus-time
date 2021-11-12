@@ -5,10 +5,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Tuple
 import sys
-if sys.platform[:3]=='win':  import msvcrt
-else:                      import tty
-
-
+if sys.platform[:3]=='win': import msvcrt
+else: import tty
 
 class Timer():
     def __init__(self, intended_mins_of_focus):
@@ -24,9 +22,9 @@ class Timer():
         while self.mins_focused_so_far < self.intended_mins_of_focus:
             self.select_inter_reminder_interval()
             self.wait_until_next_reminder()
-            if self.session_failed: break
+            if self.session_timed_out: break
             self.issue_reminder()
-        return self.mins_focused_so_far, self.session_failed
+        return self.mins_focused_so_far, self.session_timed_out
 
 # ------INIT FUNCS-------------------------------------------
     def calculate_max_session_duration(self):
@@ -45,7 +43,7 @@ class Timer():
 
 # -----TIME_SESSION FUNCS--------------------------------------
     def initiate_session(self):
-        print(f'\n-- Starting focus session for {int(self.intended_mins_of_focus)} minute{"" + "s"*(self.intended_mins_of_focus!=1)} of quality time (up to {int(self.max_mins_in_session)} minutes of real time)\n   {datetime.now()}\n\n')
+        print(f'\n-- Starting focus session for {int(self.intended_mins_of_focus)} minute{"" + "s"*(self.intended_mins_of_focus!=1)} of quality time (up to {int(self.max_mins_in_session)} minutes of real time)\n   {datetime.now()}\n')
         playsound(str(Path(__file__).parent / '../data/start.mp3'))
         self.session_start_time = time.time()
 
@@ -59,37 +57,39 @@ class Timer():
         while (time.time() - start_time) < self.inter_reminder_interval:
             self.mins_elapsed_in_session = (time.time() - self.session_start_time) / 60
             if self.time_is_up(): break
-        self.mins_focused_so_far += (self.inter_reminder_interval + self.duration_of_reminder) / 60
+        
 
     def time_is_up(self) -> bool:
         if self.mins_elapsed_in_session > self.max_mins_in_session: 
-            self.session_failed = True
+            self.session_timed_out = True
         else:
-            self.session_failed = False
-        return self.session_failed        
+            self.session_timed_out = False
+        return self.session_timed_out        
 
     def issue_reminder(self):
-        user_is_focusing = self.focus_query() 
-        if user_is_focusing:
-            percent_of_session_completed = np.round(100 - 100 * self.mins_elapsed_in_session / self.intended_mins_of_focus)
-            print('\nGreat job!\n{}% done\n'.format(percent_of_session_completed))
-        if not user_is_focusing:
-            print('Keep at it, champ\n')
-
-    def focus_query(self) -> bool:
-        start_time = time.time()
-        if sys.platform[:3]=='win':   
-            while msvcrt.kbhit(): msvcrt.getche() # disregard keys pressed in the inter-reminder interval
+        if self.user_says_theyre_focused() :
+            self.mins_focused_so_far += (self.inter_reminder_interval + self.duration_of_reminder) / 60
+            print(f'   Great job! {int(self.mins_focused_so_far / self.intended_mins_of_focus * 100)}% complete\n')
         else:
-            tty.setcbreak(sys.stdin)
-        print('Were you focusing? If yes, carry on. If no, press any key within {} seconds'.format(self.duration_of_reminder));
+            print(f'   Keep at it, champ. Still at {int(self.mins_focused_so_far / self.intended_mins_of_focus * 100)}%\n')
+
+    def user_says_theyre_focused(self) -> bool:
+        start_time = time.time()
+        self.disregard_keys_pressed_during_inter_reminder_interval()
+        print(f'-- Were you focusing? If yes, carry on. If no, press any key within {self.duration_of_reminder} seconds');
         playsound(str(Path(__file__).parent / '../data/ding dong.mp3'))
-        while True:
-            if self.key_pressed: return False # any key is pressed
-            if (time.time() - start_time) > self.duration_of_reminder: return True
+        while (time.time() - start_time) < self.duration_of_reminder:
+            if self.key_pressed(): return False # any key is pressed
+        return True
 
     def key_pressed(self) -> bool:
         if sys.platform[:3]=='win':       
             return msvcrt.kbhit()
         else:
             return sys.stdin.read(1)
+
+    def disregard_keys_pressed_during_inter_reminder_interval(self):
+        if sys.platform[:3]=='win': 
+            while msvcrt.kbhit(): msvcrt.getche()
+        else:
+            tty.setcbreak(sys.stdidn)
