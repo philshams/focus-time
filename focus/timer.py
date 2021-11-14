@@ -61,6 +61,7 @@ class Timer():
     def wait_until_next_reminder(self):
         start_time = time.time()
         while (time.time() - start_time) < self.inter_reminder_interval:
+            time.sleep(1)
             self.mins_elapsed_in_session = (time.time() - self.session_start_time) / 60
             if self.time_is_up(): break
         
@@ -85,6 +86,7 @@ class Timer():
     def get_user_response(self) -> bool:
         start_time = time.time()
         while (time.time() - start_time) < self.duration_of_reminder:
+            time.sleep(1)
             if self.key_pressed(): return True
         return False
 
