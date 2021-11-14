@@ -39,7 +39,7 @@ class Focus():
 
 # -----DAY FUNCTIONS-------------------------------------------------------------------------------
     def query_intended_hours_of_focus(self):
-        self.intended_hours_of_focus = float(input('\n   How long would you like to focus for today? (hours)          '))            
+        self.intended_hours_of_focus = float(input('\n-- How long would you like to focus for today? (hours)          '))            
 
     def report_hours_of_focus_remaining(self):
         self.hours_of_focus_left = self.intended_hours_of_focus - self.hours_of_focus

@@ -5,8 +5,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Tuple
 import sys
-if sys.platform[:3]=='win': import msvcrt
-else: import tty
+if sys.platform[:3]=='win': 
+    import msvcrt
+else: 
+    import tty
+    import termios
+    import io
 
 class Timer():
     def __init__(self, intended_mins_focus):
@@ -44,7 +48,7 @@ class Timer():
 # -----TIME_SESSION FUNCS--------------------------------------
     def initiate_session(self, sound = True):
         print(f'\n-- Starting focus session for {int(self.intended_mins_of_focus)} minute{"" + "s"*(self.intended_mins_of_focus!=1)} of quality time (up to {int(self.max_mins_in_session)} minutes of real time)\n   {datetime.now()}\n')
-        self.sound = sound
+        self.sound = sound # speakers working
         if self.sound: playsound(str(Path(__file__).parent / '../data/start.mp3'))
         self.session_start_time = time.time()
 
@@ -84,13 +88,16 @@ class Timer():
         return False
 
     def key_pressed(self) -> bool:
-        if sys.platform[:3]=='win':     
+        if sys.platform[:3]=='win': 
             return msvcrt.kbhit()
         else:
             tty.setcbreak(sys.stdin)
             return sys.stdin.read(1)
 
+
     def disregard_keys_pressed_during_inter_reminder_interval(self):
         if sys.platform[:3]=='win':
             while msvcrt.kbhit(): 
                 msvcrt.getch()
+        else:
+            termios.tcflush(sys.stdin, termios.TCIOFLUSH)

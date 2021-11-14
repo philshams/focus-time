@@ -1,11 +1,26 @@
 from focus.main import Focus
+from io import StringIO
+import sys
 
 def test_run_timer():
     focus = Focus()
     focus.intended_mins_focus = 0.25
     focus.run_timer()
-    assert 0.25 <= focus.mins_focused_in_session < 1.01
+    assert 0.25 <= focus.mins_focused_in_session < 1.25
     assert not focus.session_failed
+
+def test_query_intended_minutes_focus():
+    # test: just make sure it proceeds without errors 
+    focus = Focus()
+    sys.stdin = StringIO('60\n') 
+    focus.query_intended_minutes_focus()
+    assert focus.intended_mins_focus == 60
+
+def test_query_intended_hours_of_focus():
+    focus = Focus()
+    sys.stdin = StringIO('8\n')
+    focus.query_intended_hours_of_focus()
+    assert focus.intended_hours_of_focus == 8
 
 def test_report_outcome_of_session():
     # test: just make sure it proceeds without errors 
@@ -36,22 +51,3 @@ def test_test_speaker():
     focus = Focus()
     focus.test_speakers()
 
-# TODO: add mock user input to test this
-# def test_session():
-#     focus = Focus()
-#     focus.session()
-
-# TODO: add mock user input to test this
-# def test_day():
-#     focus = Focus()
-#     focus.day()
-
-# TODO: add mock user input to test this
-# def test_query_intended_minutes_focus():
-#     focus = Focus()
-#     focus.query_intended_minutes_focus
-
-# TODO: add mock user input to test this
-# def test_query_intended_hours_of_focus():
-#     focus = Focus()
-#     focus.query_intended_hours_of_focus()
