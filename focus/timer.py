@@ -18,6 +18,7 @@ class Timer():
         self.intended_mins_of_focus = intended_mins_focus
         self.mins_focused_so_far    = 0
         self.duration_of_reminder   = 15
+        self.keyboard               = True # if key input fails, this changes to false
         self.calculate_max_session_duration()
         self.calculate_inter_reminder_interval_parameters()
 
@@ -88,16 +89,26 @@ class Timer():
         return False
 
     def key_pressed(self) -> bool:
+        if not self.keyboard: return
         if sys.platform[:3]=='win': 
             return msvcrt.kbhit()
         else:
-            tty.setcbreak(sys.stdin)
-            return sys.stdin.read(1)
+            try:
+                tty.setcbreak(sys.stdin)
+                return sys.stdin.read(1)
+            except io.UnsupportedOperation:
+                self.keyboard = False
+                print('keyboard not identified')
 
 
     def disregard_keys_pressed_during_inter_reminder_interval(self):
+        if not self.keyboard: return
         if sys.platform[:3]=='win':
             while msvcrt.kbhit(): 
                 msvcrt.getch()
         else:
-            termios.tcflush(sys.stdin, termios.TCIOFLUSH)
+            try:
+                termios.tcflush(sys.stdin, termios.TCIOFLUSH)
+            except io.UnsupportedOperation:
+                self.keyboard = False
+                print('keyboard not identified')

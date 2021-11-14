@@ -1,8 +1,6 @@
 from focus.timer import Timer
 import time 
 import numpy as np
-from io import StringIO
-import sys
 
 def test_init():
     timer = Timer(60)
@@ -66,16 +64,16 @@ def test_issue_reminder():
     assert timer.mins_focused_so_far == 0.6 # no key press
 
 def test_get_user_response():
+    # current test: just make sure it proceeds without errors
     timer = Timer(60)
     assert not timer.get_user_response()
 
 def test_key_pressed():
+    # current test: just make sure it proceeds without errors
     timer = Timer(60)
-    sys.stdin = StringIO('') 
     assert not timer.key_pressed()
 
 def test_disregard_keys_pressed_during_inter_reminder_interval():
-    #TODO: add mock user input to this test
     # current test: just make sure it proceeds without errors
     timer = Timer(60)
     timer.disregard_keys_pressed_during_inter_reminder_interval()
