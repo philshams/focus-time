@@ -106,9 +106,9 @@ class Timer():
         if sys.platform[:3]=='win':
             while msvcrt.kbhit(): 
                 msvcrt.getch()
-        else:
+        else:   
             try:
                 termios.tcflush(sys.stdin, termios.TCIOFLUSH)
-            except termios.error:
+            except (io.UnsupportedOperation, termios.error):
                 self.keyboard = False
                 print('keyboard not identified')
