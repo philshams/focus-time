@@ -109,6 +109,6 @@ class Timer():
         else:
             try:
                 termios.tcflush(sys.stdin, termios.TCIOFLUSH)
-            except io.UnsupportedOperation:
+            except termios.error:
                 self.keyboard = False
                 print('keyboard not identified')
