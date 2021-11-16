@@ -25,11 +25,10 @@ def test_query_intended_hours_of_focus():
 def test_report_outcome_of_session():
     # test: just make sure it proceeds without errors 
     focus = Focus()
-    focus.report_outcome_of_session('part of a focus day')
-    focus.session_failed = True
-    focus.report_outcome_of_session('single session')
-    focus.session_failed = False
-    focus.report_outcome_of_session('single session')
+    for failure in [True,False]:
+        for context in ['single session', 'part of a focus day']:
+            focus.session_failed = failure
+            if focus.sound: focus.report_outcome_of_session(context)
 
 def test_report_hours_of_focus_remaining():
     focus = Focus()

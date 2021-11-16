@@ -18,10 +18,17 @@ def test_reminder_sound():
 
 def test_session_outcome_sounds():
     focus = Focus()
-    for failure in [True,False]:
-        for context in ['single session', 'part of a focus day']:
-            focus.session_failed = failure
-            if focus.sound: focus.report_outcome_of_session(context)
+    context = 'single session'
+    focus.session_failed = True
+    if focus.sound: focus.report_outcome_of_session(context)
+
+    context = 'single session'
+    focus.session_failed = False
+    if focus.sound: focus.report_outcome_of_session(context)
+
+    context = 'part of a focus day'
+    focus.session_failed = False
+    if focus.sound: focus.report_outcome_of_session(context)
 
 def test_day_complete_sound():
     focus = Focus()
