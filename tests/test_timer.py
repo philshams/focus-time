@@ -45,8 +45,8 @@ def test_wait_until_next_reminder():
     timer.inter_reminder_interval = 21
     timer.session_start_time = time.time()
     timer.wait_until_next_reminder()
-    assert int(time.time() - timer.session_start_time) == 21
-    assert np.round(timer.mins_elapsed_in_session*60) == 21
+    assert int(time.time() - timer.session_start_time) in [21,22]
+    assert np.round(timer.mins_elapsed_in_session*60) in [21,22]
 
 def test_time_is_up() -> bool:
     timer = Timer(60)
