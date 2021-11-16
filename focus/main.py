@@ -29,13 +29,15 @@ class Focus():
         self.mins_focused_in_session, self.session_failed = Timer(self.intended_mins_focus).time_session(self.sound)
 
     def report_outcome_of_session(self, context):
-        if context == 'part of a focus day': return
         if self.session_failed: 
             print('Out of time.')
             if self.sound: playsound(str(Path(__file__).parent / '../data/failure.mp3'))
-        elif not self.session_failed:
+        elif context == 'single session' and not self.session_failed:
             print('You did it!!!')
             if self.sound: playsound(str(Path(__file__).parent / '../data/success.mp3'))
+        elif context == 'part of a focus day' and not self.session_failed:
+            print('Session complete')
+            if self.sound: playsound(str(Path(__file__).parent / '../data/session complete.mp3'))
 
 # -----DAY FUNCTIONS-------------------------------------------------------------------------------
     def query_intended_hours_of_focus(self):
@@ -49,8 +51,8 @@ class Focus():
 
     def report_outcome_of_day(self):
         if np.random.random() < .95:
-            print('\nCongratulations slugger, you have just scored a day of focus!\n')
-            if self.sound: playsound(str(Path(__file__).parent / '../data/home run.mp3'))
+            print('\nCongratulations, you have just achieved a day of focus!\n')
+            if self.sound: playsound(str(Path(__file__).parent / '../data/victory.mp3'))
         else:
             print('\nYaaaaaaay. Another day of focus!\n')
             if self.sound: playsound(str(Path(__file__).parent / '../data/yay.mp3'))

@@ -1,6 +1,5 @@
 from focus.timer import Timer
 from focus.main import Focus
-from playsound import playsound
 
 def test_start_sound():
     focus = Focus()
@@ -19,11 +18,10 @@ def test_reminder_sound():
 
 def test_session_outcome_sounds():
     focus = Focus()
-    if focus.sound:
-        focus.session_failed = True
-        focus.report_outcome_of_session('single session')
-        focus.session_failed = False
-        focus.report_outcome_of_session('single session')
+    for failure in [True,False]:
+        for context in ['single session', 'part of a focus day']:
+            focus.session_failed = failure
+            if focus.sound: focus.report_outcome_of_session(context)
 
 def test_day_complete_sound():
     focus = Focus()
