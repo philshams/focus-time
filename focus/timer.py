@@ -1,6 +1,7 @@
 import numpy as np
 import time
-from playsound import playsound
+import os; os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+import pygame
 from datetime import datetime
 from pathlib import Path
 from typing import Tuple
@@ -21,6 +22,7 @@ class Timer():
         self.keyboard               = True # if key input fails, this changes to false
         self.calculate_max_session_duration()
         self.calculate_inter_reminder_interval_parameters()
+        self.initialize_timer_sounds()        
 
     def time_session(self, sound=True) -> Tuple[float, bool]:
         self.initiate_session(sound)
@@ -50,7 +52,8 @@ class Timer():
     def initiate_session(self, sound = True):
         print(f'\n-- Starting focus session for {int(self.intended_mins_of_focus)} minute{"" + "s"*(self.intended_mins_of_focus!=1)} of quality time (up to {int(self.max_mins_in_session)} minutes of real time)\n   {datetime.now()}\n')
         self.sound = sound # speakers working
-        if self.sound: playsound(str(Path(__file__).parent / '../data/start.mp3'))
+        if self.sound: 
+            pygame.mixer.Sound.play(self.start_mp3)
         self.session_start_time = time.time()
 
     def select_inter_reminder_interval(self):
@@ -75,7 +78,7 @@ class Timer():
     def issue_reminder(self):
         self.disregard_keys_pressed_during_inter_reminder_interval()
         print(f'-- Were you focusing? If yes, carry on. If no, press any key within {self.duration_of_reminder} seconds')
-        if self.sound: playsound(str(Path(__file__).parent / '../data/ding dong.mp3'))
+        if self.sound: pygame.mixer.Sound.play(self.reminder_mp3)
         user_pressed_key = self.get_user_response()
         if not user_pressed_key:
             self.mins_focused_so_far += (self.inter_reminder_interval + self.duration_of_reminder) / 60
@@ -114,3 +117,8 @@ class Timer():
             except (io.UnsupportedOperation, termios.error):
                 self.keyboard = False
                 print('keyboard not identified')
+
+    def initialize_timer_sounds(self):
+        pygame.mixer.init()
+        self.start_mp3    = pygame.mixer.Sound(str(Path(__file__).parent / '../data/start.wav'))
+        self.reminder_mp3 = pygame.mixer.Sound(str(Path(__file__).parent / '../data/ding dong.mp3'))

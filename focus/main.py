@@ -1,11 +1,13 @@
 import numpy as np
-from playsound import playsound
+import os; os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+import pygame
+import time
 from pathlib import Path
 from focus.timer import Timer
 
 class Focus():
     def __init__(self):
-        self.test_speakers()
+        self.initialize_focus_sounds()
 
     def session(self, context: str='single session'):
         self.query_intended_minutes_focus()
@@ -31,13 +33,17 @@ class Focus():
     def report_outcome_of_session(self, context):
         if self.session_failed: 
             print('Out of time.')
-            if self.sound: playsound(str(Path(__file__).parent / '../data/failure.mp3'))
+            if self.sound: 
+                pygame.mixer.Sound.play(self.session_failure_mp3)
+                time.sleep(self.session_failure_mp3.get_length())
         elif context == 'single session' and not self.session_failed:
             print('You did it!!!')
-            if self.sound: playsound(str(Path(__file__).parent / '../data/success.mp3'))
+            if self.sound: pygame.mixer.Sound.play(self.session_success_mp3)
+            time.sleep(self.session_success_mp3.get_length())
         elif context == 'part of a focus day' and not self.session_failed:
             print('Session complete')
-            if self.sound: playsound(str(Path(__file__).parent / '../data/session complete.mp3'))
+            if self.sound: pygame.mixer.Sound.play(self.session_complete_mp3)
+            time.sleep(self.session_complete_mp3.get_length())
 
 # -----DAY FUNCTIONS-------------------------------------------------------------------------------
     def query_intended_hours_of_focus(self):
@@ -52,14 +58,27 @@ class Focus():
     def report_outcome_of_day(self):
         if np.random.random() < .95:
             print('\nCongratulations, you have just achieved a day of focus!\n')
-            if self.sound: playsound(str(Path(__file__).parent / '../data/victory.mp3'))
+            if self.sound: 
+                pygame.mixer.Sound.play(self.day_success_mp3_I)
+                time.sleep(self.day_success_mp3_I.get_length())
         else:
             print('\nYaaaaaaay. Another day of focus!\n')
-            if self.sound: playsound(str(Path(__file__).parent / '../data/yay.mp3'))
+            if self.sound: 
+                pygame.mixer.Sound.play(self.day_success_mp3_II)
+                time.sleep(self.day_success_mp3_II.get_length())
 # -----INIT FUNTIONS------------------------------------------------------------------------------
-    def test_speakers(self):
+    def initialize_focus_sounds(self):
         try: 
-            playsound(str(Path(__file__).parent / '../data/test.mp3'))
+            pygame.mixer.init()
+            sound_check_mp3 = pygame.mixer.Sound(str(Path(__file__).parent / '../data/test.mp3'))
+            sound_check_wav = pygame.mixer.Sound(str(Path(__file__).parent / '../data/test.wav'))
+            pygame.mixer.Sound.play(sound_check_mp3)
+            pygame.mixer.Sound.play(sound_check_wav)
+            self.session_success_mp3  = pygame.mixer.Sound(str(Path(__file__).parent / '../data/success.mp3'))
+            self.session_failure_mp3  = pygame.mixer.Sound(str(Path(__file__).parent / '../data/failure.wav'))
+            self.session_complete_mp3 = pygame.mixer.Sound(str(Path(__file__).parent / '../data/session complete.mp3'))
+            self.day_success_mp3_I    = pygame.mixer.Sound(str(Path(__file__).parent / '../data/victory.mp3'))
+            self.day_success_mp3_II   = pygame.mixer.Sound(str(Path(__file__).parent / '../data/yay.mp3'))
             self.sound = True
         except Exception: 
             print('Note: speakers not identified, sound will not play')

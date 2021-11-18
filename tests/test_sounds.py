@@ -1,11 +1,13 @@
 from focus.timer import Timer
 from focus.main import Focus
+import time
 
 def test_start_sound():
     focus = Focus()
     timer = Timer(60)
     if focus.sound:
         timer.initiate_session(sound=True)
+        time.sleep(1)
 
 def test_reminder_sound():
     focus = Focus()

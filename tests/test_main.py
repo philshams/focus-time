@@ -48,5 +48,5 @@ def test_test_speaker():
     # test: just make sure it proceeds without errors 
     # since function output will depend on which device is used
     focus = Focus()
-    focus.test_speakers()
+    focus.initialize_focus_sounds()
 
