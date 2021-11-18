@@ -44,7 +44,7 @@ def test_report_outcome_of_day():
     focus = Focus()
     focus.report_outcome_of_day
 
-def test_test_speaker():
+def test_initialize_focus_sounds():
     # test: just make sure it proceeds without errors 
     # since function output will depend on which device is used
     focus = Focus()

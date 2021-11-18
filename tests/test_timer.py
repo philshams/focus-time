@@ -77,3 +77,9 @@ def test_disregard_keys_pressed_during_inter_reminder_interval():
     # current test: just make sure it proceeds without errors
     timer = Timer(60)
     timer.disregard_keys_pressed_during_inter_reminder_interval()
+
+def test_initialize_timer_sounds():
+    # test: just make sure it proceeds without errors 
+    # since function output will depend on which device is used
+    timer = Timer(60)
+    timer.initialize_timer_sounds()

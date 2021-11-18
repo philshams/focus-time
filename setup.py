@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="focus-time",
-    version="1.2.3",
+    version="1.2.4",
     author="Philip Shamash",
     author_email="philip.shamash.17@ucl.ac.uk",
     description="Focus time is an Python application that can help you focus for a set amount of time",
@@ -13,7 +13,7 @@ setuptools.setup(
     url = "https://github.com/philshams/focus-time",
     packages=["focus"],
     package_dir={'focus':'focus'},
-    package_data={'focus': ['../data/*.mp3']},
+    package_data={'focus': ['../data/*.mp3', '../data/*.wav']},
     install_requires=['DateTime>=4.3',
                       'numpy>=1.19',
                       'pygame>=2.1.0'                

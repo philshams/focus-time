@@ -25,7 +25,11 @@ class Focus():
 
 # -----SESSION FUNCTIONS--------------------------------------------------------------------------- 
     def query_intended_minutes_focus(self):
-        self.intended_mins_focus = float(input('\n-- How long would you like to focus for? (minutes)          '))
+        try:
+            self.intended_mins_focus = float(input('\n-- How long would you like to focus for? (minutes)          '))
+        except ValueError:
+            print('please enter a number!')
+            self.query_intended_minutes_focus()
 
     def run_timer(self):
         self.mins_focused_in_session, self.session_failed = Timer(self.intended_mins_focus).time_session(self.sound)
@@ -47,7 +51,12 @@ class Focus():
 
 # -----DAY FUNCTIONS-------------------------------------------------------------------------------
     def query_intended_hours_of_focus(self):
-        self.intended_hours_of_focus = float(input('\n-- How long would you like to focus for today? (hours)          '))            
+        try:
+            self.intended_hours_of_focus = float(input('\n-- How long would you like to focus for today? (hours)          '))  
+        except ValueError:
+            print('please enter a number!')
+            self.query_intended_minutes_focus()
+                  
 
     def report_hours_of_focus_remaining(self):
         self.hours_of_focus_left = self.intended_hours_of_focus - self.hours_of_focus
@@ -80,6 +89,6 @@ class Focus():
             self.day_success_mp3_I    = pygame.mixer.Sound(str(Path(__file__).parent / '../data/victory.mp3'))
             self.day_success_mp3_II   = pygame.mixer.Sound(str(Path(__file__).parent / '../data/yay.mp3'))
             self.sound = True
-        except Exception: 
-            print('Note: speakers not identified, sound will not play')
+        except pygame.error: 
+            print('Note: speakers not identified, sound will not playaa')
             self.sound = False

@@ -52,8 +52,7 @@ class Timer():
     def initiate_session(self, sound = True):
         print(f'\n-- Starting focus session for {int(self.intended_mins_of_focus)} minute{"" + "s"*(self.intended_mins_of_focus!=1)} of quality time (up to {int(self.max_mins_in_session)} minutes of real time)\n   {datetime.now()}\n')
         self.sound = sound # speakers working
-        if self.sound: 
-            pygame.mixer.Sound.play(self.start_mp3)
+        if self.sound: pygame.mixer.Sound.play(self.start_mp3)
         self.session_start_time = time.time()
 
     def select_inter_reminder_interval(self):
