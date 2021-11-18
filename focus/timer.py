@@ -118,6 +118,9 @@ class Timer():
                 print('keyboard not identified')
 
     def initialize_timer_sounds(self):
-        pygame.mixer.init()
-        self.start_mp3    = pygame.mixer.Sound(str(Path(__file__).parent / '../data/start.wav'))
-        self.reminder_mp3 = pygame.mixer.Sound(str(Path(__file__).parent / '../data/ding dong.mp3'))
+        try:
+            pygame.mixer.init()
+            self.start_mp3    = pygame.mixer.Sound(str(Path(__file__).parent / '../data/start.wav'))
+            self.reminder_mp3 = pygame.mixer.Sound(str(Path(__file__).parent / '../data/ding dong.mp3'))
+        except pygame.error: 
+            pass # this code is also executed in the main script, so a failure message here is redundant

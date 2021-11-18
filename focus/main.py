@@ -88,6 +88,8 @@ class Focus():
             self.session_complete_mp3 = pygame.mixer.Sound(str(Path(__file__).parent / '../data/session complete.mp3'))
             self.day_success_mp3_I    = pygame.mixer.Sound(str(Path(__file__).parent / '../data/victory.mp3'))
             self.day_success_mp3_II   = pygame.mixer.Sound(str(Path(__file__).parent / '../data/yay.mp3'))
+            self.start_mp3            = pygame.mixer.Sound(str(Path(__file__).parent / '../data/start.wav'))
+            self.reminder_mp3         = pygame.mixer.Sound(str(Path(__file__).parent / '../data/ding dong.mp3'))
             self.sound = True
         except pygame.error: 
             print('Note: speakers not identified, sound will not playaa')
