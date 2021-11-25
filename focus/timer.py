@@ -93,7 +93,7 @@ class Timer():
             while (time.time() - start_time) < self.duration_of_reminder:
                 time.sleep(1)
                 if key_pressed_windows(): return True # if a key is pressed
-        else: #unix systems
+        else: #unix systems - interrupt stdin after reminder duration
             signal.signal(signal.SIGALRM, self.unix_timeout)
             signal.alarm(self.duration_of_reminder)
             user_pressed_key = self.key_pressed_unix()
@@ -102,15 +102,21 @@ class Timer():
 
     def key_pressed_unix(self) -> bool:
         try:
+            stdin_file = sys.stdin.fileno()
+            original_terminal_settings = termios.tcgetattr(stdin_file)
             hide_user_input_from_terminal(sys.stdin)
-            return sys.stdin.read(1)
+            user_pressed_key = sys.stdin.read(1)
+            termios.tcsetattr(stdin_file, termios.TCSADRAIN, original_terminal_settings) # restore input settings
+            return user_pressed_key
         except BlockingIOError:
+            termios.tcsetattr(stdin_file, termios.TCSADRAIN, original_terminal_settings)
             return False
         except io.UnsupportedOperation:
             self.keyboard = False
             print('keyboard not identified')
+        
 
-    def unix_timeout():
+    def unix_timeout(self, *args):
         raise BlockingIOError()
 
     def disregard_keys_pressed_during_inter_reminder_interval(self):

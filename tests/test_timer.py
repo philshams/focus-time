@@ -73,6 +73,13 @@ def test_disregard_keys_pressed_during_inter_reminder_interval():
     timer = Timer(60)
     timer.disregard_keys_pressed_during_inter_reminder_interval()
 
+def test_unix_timeout():
+    timer = Timer(60)
+    try:
+        timer.unix_timeout()
+    except BlockingIOError:
+        pass
+
 def test_initialize_timer_sounds():
     # test: just make sure it proceeds without errors 
     # since function output will depend on which device is used
