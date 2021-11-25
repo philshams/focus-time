@@ -92,5 +92,5 @@ class Focus():
             self.reminder_mp3         = pygame.mixer.Sound(str(Path(__file__).parent / '../data/ding dong.mp3'))
             self.sound = True
         except pygame.error: 
-            print('Note: speakers not identified, sound will not playaa')
+            print('Note: speakers not identified, sound will not play')
             self.sound = False

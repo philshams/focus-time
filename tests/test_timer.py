@@ -68,11 +68,6 @@ def test_get_user_response():
     timer = Timer(60)
     assert not timer.get_user_response()
 
-def test_key_pressed():
-    # current test: just make sure it proceeds without errors
-    timer = Timer(60)
-    assert not timer.key_pressed()
-
 def test_disregard_keys_pressed_during_inter_reminder_interval():
     # current test: just make sure it proceeds without errors
     timer = Timer(60)

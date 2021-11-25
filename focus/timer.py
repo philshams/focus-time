@@ -7,11 +7,12 @@ from pathlib import Path
 from typing import Tuple
 import sys
 if sys.platform[:3]=='win': 
-    import msvcrt
+    from msvcrt import kbhit as key_pressed_windows, getch as clear_keypresses
 else: 
-    import tty
+    from tty import setcbreak as hide_user_input_from_terminal
     import termios
     import io
+    import signal
 
 class Timer():
     def __init__(self, intended_mins_focus):
@@ -50,7 +51,7 @@ class Timer():
 
 # -----TIME_SESSION FUNCS--------------------------------------
     def initiate_session(self, sound = True):
-        print(f'\n-- Starting focus session for {int(self.intended_mins_of_focus)} minute{"" + "s"*(self.intended_mins_of_focus!=1)} of quality time (up to {int(self.max_mins_in_session)} minutes of real time)\n   {datetime.now()}\n')
+        print(f'\n-- Starting focus session for {self.intended_mins_of_focus} minute{"" + "s"*(self.intended_mins_of_focus!=1)} of quality time (up to {int(self.max_mins_in_session)} minutes of real time)\n   {datetime.now()}\n')
         self.sound = sound # speakers working
         if self.sound: pygame.mixer.Sound.play(self.start_mp3)
         self.session_start_time = time.time()
@@ -81,35 +82,42 @@ class Timer():
         user_pressed_key = self.get_user_response()
         if not user_pressed_key:
             self.mins_focused_so_far += (self.inter_reminder_interval + self.duration_of_reminder) / 60
-            print(f'   Great job! {int(self.mins_focused_so_far / self.intended_mins_of_focus * 100)}% complete\n')
+            print(f'   Great job! {min(100, int(self.mins_focused_so_far / self.intended_mins_of_focus * 100))}% complete\n')
         elif user_pressed_key:
             print(f'   Keep at it, champ. Still at {int(self.mins_focused_so_far / self.intended_mins_of_focus * 100)}%\n')
 
     def get_user_response(self) -> bool:
-        start_time = time.time()
-        while (time.time() - start_time) < self.duration_of_reminder:
-            time.sleep(1)
-            if self.key_pressed(): return True
-        return False
-
-    def key_pressed(self) -> bool:
         if not self.keyboard: return
-        if sys.platform[:3]=='win': 
-            return msvcrt.kbhit()
-        else:
-            try:
-                tty.setcbreak(sys.stdin)
-                return sys.stdin.read(1)
-            except io.UnsupportedOperation:
-                self.keyboard = False
-                print('keyboard not identified')
+        start_time = time.time()
+        if sys.platform[:3]=='win':
+            while (time.time() - start_time) < self.duration_of_reminder:
+                time.sleep(1)
+                if key_pressed_windows(): return True # if a key is pressed
+        else: #unix systems
+            signal.signal(signal.SIGALRM, self.unix_timeout)
+            signal.alarm(self.duration_of_reminder)
+            user_pressed_key = self.key_pressed_unix()
+            signal.alarm(0)
+            return user_pressed_key
 
+    def key_pressed_unix(self) -> bool:
+        try:
+            hide_user_input_from_terminal(sys.stdin)
+            return sys.stdin.read(1)
+        except BlockingIOError:
+            return False
+        except io.UnsupportedOperation:
+            self.keyboard = False
+            print('keyboard not identified')
+
+    def unix_timeout():
+        raise BlockingIOError()
 
     def disregard_keys_pressed_during_inter_reminder_interval(self):
         if not self.keyboard: return
         if sys.platform[:3]=='win':
-            while msvcrt.kbhit(): 
-                msvcrt.getch()
+            while key_pressed_windows(): 
+               clear_keypresses()
         else:   
             try:
                 termios.tcflush(sys.stdin, termios.TCIOFLUSH)
@@ -123,4 +131,4 @@ class Timer():
             self.start_mp3    = pygame.mixer.Sound(str(Path(__file__).parent / '../data/start.wav'))
             self.reminder_mp3 = pygame.mixer.Sound(str(Path(__file__).parent / '../data/ding dong.mp3'))
         except pygame.error: 
-            pass # this code is also executed in the main script, so a failure message here is redundant
+            pass # this code is also executed in the main script, so leave out speaker error message here
