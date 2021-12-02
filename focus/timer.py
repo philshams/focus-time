@@ -88,19 +88,23 @@ class Timer():
 
     def get_user_response(self) -> bool:
         if not self.keyboard: return
-        start_time = time.time()
         if sys.platform[:3]=='win':
-            while (time.time() - start_time) < self.duration_of_reminder:
-                time.sleep(1)
-                if key_pressed_windows(): return True # if a key is pressed
+            return self.get_keypress_windows()
         else: #unix systems - interrupt stdin after reminder duration
             signal.signal(signal.SIGALRM, self.unix_timeout)
             signal.alarm(self.duration_of_reminder)
-            user_pressed_key = self.key_pressed_unix()
+            user_pressed_key = self.get_keypress_unix()
             signal.alarm(0)
             return user_pressed_key
 
-    def key_pressed_unix(self) -> bool:
+    def get_keypress_windows(self)->bool:
+        start_time = time.time()
+        while (time.time() - start_time) < self.duration_of_reminder:
+            time.sleep(1)
+            if key_pressed_windows():
+                return True # if a key is pressed
+
+    def get_keypress_unix(self) -> bool:
         try:
             stdin_file = sys.stdin.fileno()
             original_terminal_settings = termios.tcgetattr(stdin_file)

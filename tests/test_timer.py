@@ -1,6 +1,7 @@
 from focus.timer import Timer
 import time 
 import numpy as np
+import sys
 
 def test_init():
     timer = Timer(60)
@@ -64,9 +65,13 @@ def test_issue_reminder():
     assert timer.mins_focused_so_far == 0.6 # no key press
 
 def test_get_user_response():
-    # current test: just make sure it proceeds without errors
     timer = Timer(60)
     assert not timer.get_user_response()
+
+def test_get_keypress_windows():
+    timer = Timer(60)
+    if sys.platform[:3]=='win':
+        assert not timer.get_keypress_windows()
 
 def test_disregard_keys_pressed_during_inter_reminder_interval():
     # current test: just make sure it proceeds without errors

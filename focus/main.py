@@ -36,18 +36,19 @@ class Focus():
 
     def report_outcome_of_session(self, context):
         if self.session_failed: 
-            print('Out of time.')
-            if self.sound: 
-                pygame.mixer.Sound.play(self.session_failure_mp3)
-                time.sleep(self.session_failure_mp3.get_length())
+            message = 'Out of time.'
+            sound = self.session_failure_mp3
         elif context == 'single session' and not self.session_failed:
-            print('You did it!!!')
-            if self.sound: pygame.mixer.Sound.play(self.session_success_mp3)
-            time.sleep(self.session_success_mp3.get_length())
+            message = 'You did it!!!'
+            sound = self.session_success_mp3
         elif context == 'part of a focus day' and not self.session_failed:
-            print('Session complete')
-            if self.sound: pygame.mixer.Sound.play(self.session_complete_mp3)
-            time.sleep(self.session_complete_mp3.get_length())
+            message = 'Session complete'
+            sound = self.session_complete_mp3
+        
+        print(message)
+        if self.sound:
+            pygame.mixer.Sound.play(sound)
+            time.sleep(sound.get_length())
 
 # -----DAY FUNCTIONS-------------------------------------------------------------------------------
     def query_intended_hours_of_focus(self):
@@ -66,15 +67,16 @@ class Focus():
 
     def report_outcome_of_day(self):
         if np.random.random() < .95:
-            print('\nCongratulations, you have just achieved a day of focus!\n')
-            if self.sound: 
-                pygame.mixer.Sound.play(self.day_success_mp3_I)
-                time.sleep(self.day_success_mp3_I.get_length())
+            message = '\nCongratulations, you have just achieved a day of focus!\n'
+            sound = self.day_success_mp3_I
         else:
-            print('\nYaaaaaaay. Another day of focus!\n')
-            if self.sound: 
-                pygame.mixer.Sound.play(self.day_success_mp3_II)
-                time.sleep(self.day_success_mp3_II.get_length())
+            message = '\nYaaaaaaay. Another day of focus!\n'
+            sound = self.day_success_mp3_II
+
+        print(message)
+        if self.sound:
+            pygame.mixer.Sound.play(sound)
+            time.sleep(sound.get_length())
 # -----INIT FUNTIONS------------------------------------------------------------------------------
     def initialize_focus_sounds(self):
         try: 
